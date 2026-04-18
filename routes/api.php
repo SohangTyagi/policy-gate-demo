@@ -2,13 +2,12 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
-
-
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use App\Http\Requests\LoginRequest;
+use Illuminate\Http\Request;
 
-Route::post('/login', function (Request $request) {
+Route::post('/login', function (LoginRequest $request) {
 
     $user = User::where('email', $request->email)->first();
 
@@ -40,3 +39,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/posts/{post}', [PostController::class, 'update']);
     Route::delete('/posts/{post}', [PostController::class, 'destroy']);
 });
+
+Route::post('/logout', function (Request $request) {
+    $request->user()->currentAccessToken()->delete();
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Logged out successfully'
+    ]);
+})->middleware('auth:sanctum');

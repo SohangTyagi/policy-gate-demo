@@ -13,10 +13,5 @@ class AuthServiceProvider extends ServiceProvider
         Post::class => PostPolicy::class,
     ];
 
-    public function boot(): void
-    {
-        Gate::before(function ($user, $ability) {
-            return $user->is_admin ? true : null;
-        });
-    }
+    public function boot(): void {}
 }
