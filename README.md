@@ -1,58 +1,144 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# PolicyGate Demo 🛡️
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A sophisticated Laravel-based demonstration project showcasing advanced **Authorization Policies**, **Layered Architecture**, and **Clean Code** principles. This project illustrates how to manage complex access controls in a modern web application while maintaining a scalable and maintainable codebase.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 🚀 Overview
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+**PolicyGate Demo** is built to demonstrate the seamless integration of Laravel's authorization mechanisms (Policies & Gates) within a structured API environment. It features a three-layered architecture (Controller → Service → Repository) to ensure that business logic, data access, and authorization are decoupled and easily testable.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### Core Features:
+- **Role-Based Access Control (RBAC):** Distinct permissions for Admins and Regular Users.
+- **Advanced Authorization:** Fine-grained control over Post management using Laravel Policies.
+- **Layered Architecture:** Implements Service and Repository patterns for better modularity.
+- **RESTful API:** A clean, standardized API for resource management.
+- **Sanctum Authentication:** Secure token-based authentication for all protected endpoints.
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## 🛠️ Tech Stack
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- **Framework:** [Laravel 11.x](https://laravel.com/)
+- **Authentication:** [Laravel Sanctum](https://laravel.com/docs/sanctum)
+- **Database:** SQLite (default for easy setup)
+- **Architecture:** Repository & Service Pattern
+- **Language:** PHP 8.2+
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+---
 
-## Agentic Development
+## 📂 Architecture Layers
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+This project follows a professional-grade layered architecture to ensure separation of concerns:
 
+### 1. Repository Layer (`app/Repositories`)
+Handles all direct database interactions using Eloquent. This layer abstracts the data source from the rest of the application, making it easier to swap or mock during testing.
+- **Files:** `PostRepository`, `PostRepositoryInterface`
+
+### 2. Service Layer (`app/Services`)
+The "Brain" of the application. It contains the business logic and coordinates between repositories. It ensures that the controllers remain thin and focused only on handling requests and responses.
+- **Files:** `PostService`
+
+### 3. Controller Layer (`app/Http/Controllers`)
+Responsible for handling incoming HTTP requests, validating inputs (via Request Classes), and returning JSON responses. Authorization is enforced here at the entry point of each action.
+- **Files:** `PostController`
+
+### 4. Validation & Presentation Layers
+- **Requests (`app/Http/Requests`):** Encapsulates validation logic for incoming API requests (e.g., `StorePostRequest`).
+- **Resources (`app/Http/Resources`):** Transforms Eloquent models into consistent JSON structures for API responses (e.g., `PostResource`).
+
+---
+
+## 🔐 Authorization Logic (Policy)
+
+The project uses `PostPolicy` to define specific rules for interacting with `Post` resources.
+
+| Action | Logic |
+| :--- | :--- |
+| **View (List/Show)** | Publicly accessible to anyone. |
+| **Create** | Allowed for **Regular Users** only (Admins are restricted from creating posts in this demo). |
+| **Update** | Allowed only for the **Owner** of the post OR any **Admin**. |
+| **Delete** | Allowed only for the **Owner** of the post OR any **Admin**. |
+
+*Implementation can be found in `app/Policies/PostPolicy.php`.*
+
+---
+
+## 📡 API Documentation
+
+### Authentication
+| Endpoint | Method | Description | Auth Required |
+| :--- | :--- | :--- | :--- |
+| `/api/login` | `POST` | Authenticate user and receive Bearer Token | No |
+| `/api/logout` | `POST` | Revoke the current access token | Yes |
+
+### Posts Management
+| Endpoint | Method | Description | Auth Required |
+| :--- | :--- | :--- | :--- |
+| `/api/posts` | `GET` | List all posts | No |
+| `/api/posts/{id}` | `GET` | View a single post | No |
+| `/api/posts` | `POST` | Create a new post | Yes |
+| `/api/posts/{id}` | `PUT` | Update an existing post | Yes |
+| `/api/posts/{id}` | `DELETE` | Delete a post | Yes |
+
+---
+
+## ⚙️ Setup & Installation
+
+Follow these steps to get the project running locally:
+
+### 1. Clone the Repository
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+git clone <repository-url>
+cd policy-gate-demo
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+### 2. Install Dependencies
+```bash
+composer install
+```
 
-## Contributing
+### 3. Environment Configuration
+```bash
+cp .env.example .env
+php artisan key:generate
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### 4. Database Setup
+The project uses SQLite by default. Ensure your `.env` is configured (the default should work if you create the database file).
+```bash
+# Create the sqlite file if it doesn't exist
+touch database/database.sqlite
+```
 
-## Code of Conduct
+### 5. Run Migrations & Seeders
+This will create the tables and seed the initial users (Admin and Regular Users).
+```bash
+php artisan migrate --seed
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### 6. Start the Server
+```bash
+php artisan serve
+```
 
-## Security Vulnerabilities
+---
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## 🧪 Testing the API
 
-## License
+### Default Credentials (Seeded):
+- **Admin:** `admin@example.com` / `password`
+- **User 1:** `user1@example.com` / `password`
+- **User 2:** `user2@example.com` / `password`
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### Example Login Request:
+```bash
+curl -X POST http://localhost:8000/api/login \
+     -H "Content-Type: application/json" \
+     -d '{"email": "user1@example.com", "password": "password"}'
+```
+
+---
+
+## 📄 License
+This project is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
