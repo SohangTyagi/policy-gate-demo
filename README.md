@@ -19,11 +19,11 @@ A sophisticated Laravel-based demonstration project showcasing advanced **Author
 
 ## 🛠️ Tech Stack
 
-- **Framework:** [Laravel 11.x](https://laravel.com/)
+- **Framework:** [Laravel 13.x](https://laravel.com/)
 - **Authentication:** [Laravel Sanctum](https://laravel.com/docs/sanctum)
-- **Database:** SQLite (default for easy setup)
+- **Database:** MySQL
 - **Architecture:** Repository & Service Pattern
-- **Language:** PHP 8.2+
+- **Language:** PHP 8.3+
 
 ---
 
@@ -105,10 +105,15 @@ php artisan key:generate
 ```
 
 ### 4. Database Setup
-The project uses SQLite by default. Ensure your `.env` is configured (the default should work if you create the database file).
-```bash
-# Create the sqlite file if it doesn't exist
-touch database/database.sqlite
+Create a new MySQL database for the project. Then, update your `.env` file with your database credentials:
+
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=policy_gate_demo
+DB_USERNAME=root
+DB_PASSWORD=your_password
 ```
 
 ### 5. Run Migrations & Seeders
