@@ -12,6 +12,11 @@ class PostService
         private PostRepository $postRepository
     ) {}
 
+    public function getAll()
+    {
+        return $this->postRepository->all();
+    }
+
     public function create(array $data): Post
     {
         $data['user_id'] = Auth::id();
