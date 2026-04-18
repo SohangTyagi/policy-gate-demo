@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
+use App\Http\Resources\PostResource;
 use App\Models\Post;
 use App\Services\PostService;
 use Illuminate\Http\JsonResponse;
@@ -23,7 +24,7 @@ class PostController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Posts fetched successfully',
-            'data' => $posts,
+            'data' => PostResource::collection($posts),
         ]);
     }
 
@@ -36,7 +37,7 @@ class PostController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Post created successfully',
-            'data' => $post,
+            'data' => new PostResource($post),
         ], 201);
     }
 
@@ -47,7 +48,7 @@ class PostController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Post fetched successfully',
-            'data' => $post,
+            'data' => new PostResource($post),
         ]);
     }
 
@@ -60,7 +61,7 @@ class PostController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Post updated successfully',
-            'data' => $post,
+            'data' => new PostResource($post),
         ]);
     }
 
